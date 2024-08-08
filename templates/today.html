@@ -1,6 +1,54 @@
-{% extend "layout.html" %}
+{% extends "layout.html" %}
 
 {% block main %}
 
+{% if data.error %}
+<div class="alert alert-danger mx-3 text-center my-3 w-75 mx-auto" role="alert">
+    <p>{{ data.error }}</p>
+</div>
+{% else %}
+
+<!--<div class="container p-3 text-center my-4">
+    <p class="fs-2 fw-bold">{{ data.name.upper() }}</p>
+    <h1 class="fw-lighter" id="temp">{{ "%.0f" | format(data.main.temp - 273.15) }}°C</h1>
+    <img src="http://openweathermap.org/img/wn/{{ data.weather[0].icon }}@2x.png" alt="Weather icon">
+    <p class="fs-5 fw-bold">{{ data.weather[0].description.capitalize() }}</p>
+</div>-->
+
+<div class="container my-4">
+    <!--The row with the date information, state and country plus weather description.-->
+    <div class="d-flex flex-row bd-highlight justify-content-between">
+        <div class="p-2 bd-highlight">
+            <p class="fw-normal">{{ date.lower() }}</p>
+            <p class="fs-2 fw-bold">{{ data.name.capitalize() }}</p>
+            <p class="fw-normal">{{ data.sys.country }}</p>
+        </div>
+        <div class="py-2 bd-highlight">
+            <p class="fs-1 fw-bold" id="desc">{{ data.weather[0].main.capitalize() }}</p>
+        </div>
+      </div>
+      <!--The row for weather icon-->
+      <div class="text-center">
+        <img src="http://openweathermap.org/img/wn/{{ data.weather[0].icon }}@2x.png" alt="Weather icon" class="weather-icon">
+      </div>
+      <!--The row for the weather temperature-->
+      <div class="d-flex flex-row bd-highlight justify-content-between align-items-center">
+        <div class="p-2 bd-highlight">
+          <h1 class="fw-light" id="temp">{{ "%.0f" | format(data.main.temp) }}<sup>°c</sup></h1>
+        </div>
+        <div class="p-2 bd-highlight">
+          <p class="fs-5 fw-normal mx-4">The weather is currently {{ data.weather[0].description }}</p>
+        </div>
+      </div>
+     
+      <!--Additional weather info-->
+      <!--<p>
+        The weather is currently {{ weather_description }}. 
+        The air has a humidity level of {{ humidity }}%, 
+        and there is a wind blowing at {{ wind_speed }} km/h.
+    </p>-->
+</div>
+
+{% endif %}
 
 {% endblock %}
