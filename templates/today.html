@@ -1,5 +1,18 @@
 {% extends "layout.html" %}
 
+{% block nav %}
+<nav class="navbar py-1">
+  <div class="container-fluid w-100">
+      <form class="bar" method="post" action="/">
+          <input class="form-control searchbar" type="text" placeholder="Location" name="location">
+          <button type="submit" class="btn btn-outline"><svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="black" class="bi bi-search searchIcon" viewBox="0 0 18 18">
+              <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+          </svg></button>
+      </form>
+  </div>
+</nav>
+{% endblock %}
+
 {% block main %}
 
 {% if data.error %}
@@ -7,48 +20,71 @@
     <p>{{ data.error }}</p>
 </div>
 {% else %}
-
-<!--<div class="container p-3 text-center my-4">
-    <p class="fs-2 fw-bold">{{ data.name.upper() }}</p>
-    <h1 class="fw-lighter" id="temp">{{ "%.0f" | format(data.main.temp - 273.15) }}°C</h1>
-    <img src="http://openweathermap.org/img/wn/{{ data.weather[0].icon }}@2x.png" alt="Weather icon">
-    <p class="fs-5 fw-bold">{{ data.weather[0].description.capitalize() }}</p>
-</div>-->
-
-<div class="container my-4">
-    <!--The row with the date information, state and country plus weather description.-->
+<div class="container my-4 col-12 col-md-8 col-lg-5 mx-auto">
+    <!-- Date, location, and weather description -->
     <div class="d-flex flex-row bd-highlight justify-content-between">
         <div class="p-2 bd-highlight">
-            <p class="fw-normal">{{ date.lower() }}</p>
-            <p class="fs-2 fw-bold">{{ data.name.capitalize() }}</p>
-            <p class="fw-normal">{{ data.sys.country }}</p>
+            <p class="fw-normal">{{ date }}</p>
+            <p class="fs-2 fw-bold">{{ data['location']['name'] }}</p>
+            <p class="fw-normal">{{ data['location']['country'] }}</p>
         </div>
         <div class="py-2 bd-highlight">
-            <p class="fs-1 fw-bold" id="desc">{{ data.weather[0].main.capitalize() }}</p>
+            <p class="fs-1 fw-bold" id="desc">{{ data['current']['condition']['text'] }}</p>
         </div>
-      </div>
-      <!--The row for weather icon-->
-      <div class="text-center">
-        <img src="http://openweathermap.org/img/wn/{{ data.weather[0].icon }}@2x.png" alt="Weather icon" class="weather-icon">
-      </div>
-      <!--The row for the weather temperature-->
-      <div class="d-flex flex-row bd-highlight justify-content-between align-items-center">
-        <div class="p-2 bd-highlight">
-          <h1 class="fw-light" id="temp">{{ "%.0f" | format(data.main.temp) }}<sup>°c</sup></h1>
-        </div>
-        <div class="p-2 bd-highlight">
-          <p class="fs-5 fw-normal mx-4">The weather is currently {{ data.weather[0].description }}</p>
-        </div>
-      </div>
-     
-      <!--Additional weather info-->
-      <!--<p>
-        The weather is currently {{ weather_description }}. 
-        The air has a humidity level of {{ humidity }}%, 
-        and there is a wind blowing at {{ wind_speed }} km/h.
-    </p>-->
-</div>
+    </div>
 
+    <!-- Weather icon -->
+    <div class="text-center">
+        <img src="{{ data['current']['condition']['icon'] }}" alt="Weather icon" class="weather-icon">
+    </div>
+
+    <!-- Temperature -->
+    <div class="d-flex flex-row bd-highlight justify-content-between align-items-center">
+        <div class="p-2 bd-highlight">
+            <h1 class="fw-light" id="temp">{{ data['current']['temp_c'] }}<sup>°C</sup></h1>
+        </div>
+        <div class="p-2 bd-highlight">
+            <p class="fs-5 fw-normal mx-2">The weather is currently {{ data['current']['condition']['text'] }}</p>
+        </div>
+    </div>
+
+    <!-- Hourly Forecast -->
+    <div class="col-12 col-md-10 col-lg-8 shadow-lg p-3 mb-5 bg-body rounded mx-auto p-2 my-3">
+        <div class="border-bottom py-2">
+            <p>Expected weather condition in the next hour is {{data['forecast']['forecastday'][0]['hour'][0]['condition']['text']}}</p>
+        </div>
+        <div class="d-flex flex-row justify-content-around flex-nowrap overflow-auto mt-2">
+            {% for hour in data['forecast']['forecastday'][0]['hour'] %}
+            <div class="p-2 bd-highlight text-center">
+                <p>{{ hour['adjusted_time'] }}</p> <!-- Show the adjusted time -->
+                <img src="{{ hour['condition']['icon'] }}" alt="Weather icon">
+                <p>{{ hour['temp_c'] }}°C</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="icon-container col-12 col-md-10 col-lg-8 shadow-lg btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"">
+      <i class="bi bi-exclamation-triangle"></i>
+    </div>
+    <!--Modal for alerts-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Weather Warnings!</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+                <p>No Alerts/warnings Available for {{location.capitalize()}}, {{data['location']['country']}}</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
 {% endif %}
 
 {% endblock %}

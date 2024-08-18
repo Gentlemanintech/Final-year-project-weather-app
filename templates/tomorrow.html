@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block main %}
+<div class="container">
+    <div class="accordion my-3" id="accordionExample">
+        {% for hour in hourlyForecast %}
+            <div class="accordion-item my-2 rounded">
+                <h2 class="accordion-header" id="heading{{ loop.index }}">
+                    <button class="accordion-button d-flex flex-row justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                        <div>
+                            <h2>{{ hour.temp_c }}°C</h2>
+                            <p>{{ hour.time}}</p>
+                        </div>
+                        <div>
+                            <img src="{{ hour.condition.icon }}" alt="{{ hour.condition.text }}" style="width: 50px; height: auto;">
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <strong>Weather Condition:</strong> {{ hour.condition.text }}<br>
+                        <strong>Wind Speed:</strong> {{ hour.wind_kph }} km/h<br>
+                        <strong>Precipitation:</strong> {{ hour.precip_mm }} mm<br>
+                        <strong>Humidity:</strong> {{ hour.humidity }}%<br>
+                        <strong>Feels Like:</strong> {{ hour.feelslike_c }}°C
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
