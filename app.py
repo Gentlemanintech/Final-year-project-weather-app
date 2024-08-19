@@ -12,8 +12,6 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 apiKey = "c0e609cd023a47eab7073826241808"
-# IP address of the user
-userLocation = geocoder.ip('me')
 
 # This code here sets the browser on which the user visits not to save any cache so it gets the latest version of the page.
 @app.after_request
@@ -24,18 +22,21 @@ def after_request(response):
     response.headers["Pragma"] = "no-cache"
     return response
 
+def get_user_location():
+    """Get user's location based on IP if not already set in the session"""
+    if 'location' not in session:
+        user_location = geocoder.ip('me')
+        session['location'] = user_location.state  # Default location from user's IP
+    return session['location']
+
 @app.route("/", methods=["POST", "GET"])
 def index():
     if request.method == "POST":
         location = request.form.get("location")
         if location:
             session['location'] = location
-    location = session.get('location', None)
 
-    if not location:
-        userLocation = geocoder.ip('me')
-        location = userLocation.state  # Default location if session doesn't have one
-
+    location = get_user_location()
     date = datetime.now()
     date_today = date.strftime("%A, %d %b")
     current_hour = date.hour  # Current hour in 24-hour format
@@ -70,7 +71,7 @@ def index():
 
 @app.route('/tomorrow')
 def tomorrow():
-    location = session.get("location")
+    location = get_user_location()
     date = datetime.now()
     tomorrow_date = date + timedelta(days=1)
     formatted_date = tomorrow_date.strftime('%Y-%m-%d')
@@ -83,11 +84,9 @@ def tomorrow():
     
     return render_template("tomorrow.html", data=data, hourlyForecast=hourly_forecast, location=location)
 
-
 @app.route('/6days')
 def sixDays():
-    # Get the location from the session
-    location = session.get("location")
+    location = get_user_location()
     today = datetime.now().date()  # Get today's date
 
     # Construct the URL with the end date (7 days forecast to include the next 6 days)
@@ -106,7 +105,6 @@ def sixDays():
     else:
         six_days_forecast = []
 
-    # Render the template with the 6-day forecast and location
     return render_template("sixDays.html", forecastDays=six_days_forecast, location=location)
 
 
@@ -135,7 +133,6 @@ def format_date(value):
 
 # Register the custom filter with Jinja
 app.jinja_env.filters['format_date'] = format_date
-
 
 if __name__ == "__main__":
     app.run(debug=True)
