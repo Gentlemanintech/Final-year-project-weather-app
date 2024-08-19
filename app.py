@@ -6,16 +6,16 @@ from flask_session import Session
 
 app = Flask(__name__)
 
-# Initiationg the session.
+# Initiating the session.
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 apiKey = "c0e609cd023a47eab7073826241808"
-# Ip address of the user
+# IP address of the user
 userLocation = geocoder.ip('me')
 
-# this code here sets the browser on which the user visits not to save any cache so it gets latest version of the page.
+# This code here sets the browser on which the user visits not to save any cache so it gets the latest version of the page.
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
@@ -39,10 +39,19 @@ def index():
     date = datetime.now()
     date_today = date.strftime("%A, %d %b")
     current_hour = date.hour  # Current hour in 24-hour format
-    current_weather_url = f"https://api.weatherapi.com/v1/forecast.json?key={apiKey}&q={location}&days=1"
+    current_weather_url = f"https://api.weatherapi.com/v1/forecast.json?key={apiKey}&q={location}&days=1&alerts=yes"
 
     data = retrieveData(current_weather_url)
     
+    # Initialize alert count and alert data
+    alert_count = 0
+    alerts = []
+
+    # Check for alerts in the data
+    if 'alerts' in data and 'alert' in data['alerts']:
+        alerts = data['alerts']['alert']
+        alert_count = len(alerts)
+
     # Adjust hourly forecast and filter
     if 'forecast' in data:
         filtered_hours = []
@@ -57,8 +66,7 @@ def index():
         # Update the data with filtered hours
         data['forecast']['forecastday'][0]['hour'] = filtered_hours
 
-    
-    return render_template("today.html", date=date_today, data=data, location=location)
+    return render_template("today.html", date=date_today, data=data, location=location, alert_count=alert_count, alerts=alerts)
 
 @app.route('/tomorrow')
 def tomorrow():

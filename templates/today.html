@@ -64,25 +64,43 @@
         </div>
     </div>
 
-    <div class="icon-container col-12 col-md-10 col-lg-8 shadow-lg btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"">
-      <i class="bi bi-exclamation-triangle"></i>
+    <!-- Alert Icon and Count -->
+    <div class="icon-container col-12 col-md-10 col-lg-8 shadow-lg btn btn-primary d-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <i class="bi bi-exclamation-triangle"></i>
+        {% if alert_count > 0 %}
+            <span>{{ alert_count }}</span>
+        {% endif %}
     </div>
-    <!--Modal for alerts-->
+
+    <!-- Modal for Alerts -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Weather Warnings!</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-                <p>No Alerts/warnings Available for {{location.capitalize()}}, {{data['location']['country']}}</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Weather Warnings!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {% if alert_count > 0 %}
+                        {% for alert in alerts %}
+                            <div class="alert alert-warning">
+                                <h4 class="alert-heading">{{ alert['headline'] }}</h4>
+                                <p>{{ alert['desc'] }}</p>
+                                <hr>
+                                <p class="mb-0"><strong>Severity:</strong> {{ alert['severity'] }}</p>
+                                <p class="mb-0"><strong>Effective:</strong> {{ alert['effective'] }}</p>
+                                <p class="mb-0"><strong>Expires:</strong> {{ alert['expires'] }}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No Alerts/Warnings available for {{location.capitalize()}}, {{data['location']['country']}}</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
 </div>
 {% endif %}
