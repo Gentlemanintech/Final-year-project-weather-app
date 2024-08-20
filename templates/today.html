@@ -83,11 +83,10 @@
                 <div class="modal-body">
                     {% if alert_count > 0 %}
                         {% for alert in alerts %}
-                            <div class="alert alert-warning">
+                            <div class="alert alert-danger">
                                 <h4 class="alert-heading">{{ alert['headline'] }}</h4>
                                 <p>{{ alert['desc'] }}</p>
                                 <hr>
-                                <p class="mb-0"><strong>Severity:</strong> {{ alert['severity'] }}</p>
                                 <p class="mb-0"><strong>Effective:</strong> {{ alert['effective'] }}</p>
                                 <p class="mb-0"><strong>Expires:</strong> {{ alert['expires'] }}</p>
                             </div>
