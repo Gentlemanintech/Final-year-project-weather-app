@@ -71,26 +71,26 @@ span {
 }
 
 .icon-container {
-    width: 70px;         /* Adjust width */
-    height: 70px;        /* Adjust height */
+    width: 70px;        
+    height: 70px;        
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f0f0f0; /* Background color for visibility */
-    border-radius: 50%; /* Make the div circular */
-    border: 2px solid #ccc; /* Optional: border around the circular div */
-    font-size: 36px;    /* Adjust icon size */
-    color: #dc3545;     /* Adjust icon color */
-    position: fixed;    /* Fixed positioning */
-    bottom: 5px;       /* Distance from the bottom of the page */
-    right: 20px;        /* Distance from the right side of the page */
-    z-index: 1000;      /* Ensure it appears above other content */
+    background-color: #f0f0f0; 
+    border-radius: 50%; 
+    border: 2px solid #ccc; 
+    font-size: 36px;    
+    color: #dc3545;     
+    position: fixed;  
+    bottom: 5px;       
+    right: 20px;        
+    z-index: 1000;      
 }
 
 
 .icon-container i {
-    font-size: 36px; /* Adjust icon size */
-    color: #dc3545;  /* Adjust icon color */
+    font-size: 36px; 
+    color: #dc3545;  
 }
 
 /* .light-bg {
